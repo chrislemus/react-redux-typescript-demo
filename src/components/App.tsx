@@ -8,9 +8,27 @@ interface AppProps {
   fetchTodos: Function; //replace `typeof fetchTodos` with `Function` because redux has no idea what thunk returns and produces error
   deleteTodo: typeof deleteTodo;
 }
-class _App extends React.Component<AppProps> {
+
+interface AppState {
+  fetching: boolean;
+}
+class _App extends React.Component<AppProps, AppState> {
+  //if constructor is not used. I could simply set the state property.
+  //This will avoid the need to set the AppState interface, thanks to Type Inference
+  constructor(props: AppProps) {
+    super(props);
+    this.state = { fetching: false };
+  }
+
+  componentDidUpdate(prevProps: AppProps): void {
+    if (!prevProps.todos.length && this.props.todos.length) {
+      this.setState({ fetching: false });
+    }
+  }
+
   onButtonClick = (): void => {
     this.props.fetchTodos();
+    this.setState({ fetching: true });
   };
 
   onTodoClick = (id: number): void => {
@@ -31,6 +49,7 @@ class _App extends React.Component<AppProps> {
     return (
       <div>
         <button onClick={this.onButtonClick}>Fetch</button>
+        {this.state.fetching ? 'LOADING' : null}
         {this.renderList()}
       </div>
     );
