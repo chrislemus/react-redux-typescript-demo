@@ -5,7 +5,7 @@ import { StoreState } from '../reducers';
 
 interface AppProps {
   todos: Todo[];
-  fetchTodos: typeof fetchTodos;
+  fetchTodos: Function; //replace `typeof fetchTodos` with `Function` because redux has no idea what thunk returns and produces error
   deleteTodo: typeof deleteTodo;
 }
 class _App extends React.Component<AppProps> {
